@@ -1,0 +1,81 @@
+
+package proto_type;
+message Info {
+   
+     message SessionInfo {
+        required string session_type = 1;          //session 的协议类型
+        required uint32 torrent_num = 2;           //torrent的资源数目
+        required uint32 peer_num = 3;              //连接peer的数目
+        required uint64 upload_bandwidth = 4;     //上传带宽
+        required uint64 download_bandwidth = 5;   //下载带宽
+    }
+    repeated SessionInfo session_info = 1;             // 重复显示不同协议的内容
+
+    message TorrentInfo {
+        required string info_hash = 1;        //torrenid 资源编号
+        required uint32 complete_precent =2;  //完成百分比
+        required uint32 inner_peer_num = 3;   //内部peer的数量
+        required uint32 outer_peer_num = 4;   //外部peer的数量
+        required uint32 alive_time = 5;
+        required uint64 upload_bandwidth = 6;
+        required uint64 download_bandwidth = 7;
+        required uint64 total_upload = 8;     //总上传大小
+        required uint64 total_download = 9;   //总下载大小
+    } 
+    repeated TorrentInfo torrent_info = 2;   //torrent列表
+    
+    message PeerInfo {
+        required uint32 peer_ip = 1;                //peer 的ip地址
+        required string peer_type = 2;             //peer 端peer类型
+        required uint32 complete_precent = 3;      //完成百分比
+        required uint32 alive_time = 4;
+        required uint64 upload_bandwidth = 5;
+        required uint64 download_bandwidth = 6;
+        required uint64 upload = 7;                //上传大小
+        required uint64 download =8;               //下载大小
+    }
+    repeated PeerInfo peer_info = 3;  //资源的所有peer端信息
+
+    
+
+    message SystemInfo {
+        message CpuInfo {
+            required string cpu_name = 1;       //cpu�名字
+            required uint32 cpu_usage = 2;      //cpu使用率 
+        }
+        repeated CpuInfo cpu_info = 1;
+        required uint64 mem_total_size =2;  //内存总大小
+        required uint32 mem_usage = 3;      //内存使用率
+        message DiskInfo {
+            required string disk_name = 1;
+            required uint64 total_size = 2;     //disk 总大小
+            required uint32 usage = 3;          //使用百分比
+        }
+        repeated DiskInfo disk_info =4;     //disk 的所有信息
+        message NetInfo {
+            required string net_name = 1;
+            required uint64 in_size = 2;        //in方向的带宽
+            required uint64 out_size = 3;       //out方向的带宽
+        }
+        repeated NetInfo net_info = 5;     //net 的所有信息
+    }
+    optional SystemInfo system_info = 4;
+    
+    message CacheStatusInfo{
+        required uint64 reads = 1;                       //��操�次数
+        required uint64 writes = 2;                      //写�操�次�
+        required uint64 blocks_read = 3;                 //读�block�
+        required uint64 blocks_write = 4;                //写�block�
+        required uint64 blocks_read_hit = 5;             //缓�读�命�block�
+        required uint64 write_to_disk_directly = 6;      //写缓存空间不够导致的直接
+        required uint64 read_cache_size = 7;             //读�cache 大小
+        required uint64 finished_write_cache_size = 8;   //完��写�cache大�
+        required uint64 unfinished_write_cache_size = 9; //�完��写�cache大�
+    }
+    optional CacheStatusInfo cache_status_info = 5;
+}
+
+message Command
+{
+    repeated string command = 1;
+}

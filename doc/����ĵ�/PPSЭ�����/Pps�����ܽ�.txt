@@ -1,0 +1,31 @@
+实现功能模块：
+UGS: 1.资源包的重定向
+	 2.资源包的信息统计
+	 3. 热点资源信息统计
+	 4. UGS相关通信实现
+
+RCS：1. baseinfo获取
+	 2. metadata获取
+	 3. pps_fsm 状态机调度
+	 4. pps_peer_connection 传输通信
+	 5. pps_session  torrent管理
+	 6. pps_torrent  
+	 
+重构：1.rcs_mapper 从以前的bt_session 提升到Session
+
+重大区别和改动：
+1. baseinfo的获取机制， 有专门的pps_baseinfo_retriver 进行获取， 一次只发出一个 base_info请求， 超时发送新的 baseinfo请求
+   只有在baseinfo获取完成之后， 才能获取metadata信息
+2. 状态机处理流程：
+	1. handshake跳转： handshake完成且baseinfo获取之后
+	2. metadata跳转：metadata获取， 同时发送收到 unchoke 和 interest消息，弥补消息与状态机设计上的不兼容
+3. 对于block下载失败的处理， 直接关闭这个peer_connection
+4. pkt_combiner， pps主要用udp  与bt的tcp协议不同，不用考虑分包、组包，粘包等问题
+
+待优化项：
+1. 对block下载失败的处理， 直接关闭peer_connection 导致不能充分利用 peer_connection
+	此处还会影响bt的流程， 需要特别注意. 症结在policy, 此处治标不治本 
+2. 在peer_conncetion 调用 socket_connection的析构函数， 导致 socket_conection析构函数调用二次
+3. pps_baseinfo_retriver中对baseinfo 一直接收不到的处理
+4. Ugs中hot_resource_manager, bt, pps 共享同一资源记录文件
+

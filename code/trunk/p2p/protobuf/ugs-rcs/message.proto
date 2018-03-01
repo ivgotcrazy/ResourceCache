@@ -1,0 +1,117 @@
+package BroadCache;
+
+// EndPoint结构（非消息）
+message EndPointStruct
+{
+    optional uint32 ip = 1;  // 32位的IP地址
+    optional uint32 port = 2;  // 16位的端口号
+}
+
+// 请求的tracker类型
+enum TrackerType
+{
+    HTTP_TRACKER = 0;
+    UDP_TRACKER = 1;
+}
+
+// rcs代理类型
+enum RcsType
+{
+    CACHED_DATA_PROXY = 0;
+    INNER_PROXY = 1;
+    OUTER_PROXY = 2;
+}
+
+// RCS向UGS发送的Bt协议keep-alive消息，此消息没有回复消息
+message BtKeepAliveMsg
+{
+    optional string domain = 1;  // 域名
+}
+
+// RCS向UGS上报已拥有资源消息，此消息没有回复消息
+message BtReportResourceMsg
+{
+    optional string domain = 1;  // 域名
+    repeated bytes info_hash = 2;  // 已拥有资源对应的info-hash列表
+}
+
+// RCS向UGS发送自己可以提供下载服务的地址列表
+message BtReportServiceAddressMsg
+{
+    optional string domain = 1;  // 域名
+    repeated EndPointStruct rcs = 2;  // 可提供服务的RCS列表
+}
+
+// RCS向UGS请求tracker-list消息，对应的回复消息为BtReplyTrackerMsg
+message BtRequestTrackerMsg
+{
+    optional string domain = 1;  // 域名
+    optional TrackerType tracker_type = 2;  // 请求的tracker类型 
+    optional bytes info_hash = 3;  // 原始格式的info-hash数据（非16进制格式）
+}
+
+// UGS向RCS回复的tracker-list消息，对应的请求消息为BtRequestTrackerMsg
+message BtReplyTrackerMsg
+{
+    optional string domain = 1;  // 域名
+    optional TrackerType tracker_type = 2;  // 请求的tracker类型
+    optional bytes info_hash = 3;  // 原始格式的info-hash数据（非16进制格式）
+    repeated EndPointStruct tracker = 4;  // tracker-list数据
+}
+
+// RCS向UGS请求代理服务器进行分布式下载，对应的回复消息为BtReplyProxyMsg
+message BtRequestProxyMsg
+{
+    optional string domain = 1;  // 域名
+    optional RcsType rcs_type = 2;  // rcs代理类型
+    optional bytes info_hash = 3;  // 资源的info-hash值
+    optional uint32 num_want = 4;  // 期望返回的rcs代理个数
+}
+
+// UGS向RCS回复代理服务器列表，对应的请求消息为BtRequestProxyMsg
+message BtReplyProxyMsg
+{
+    optional string domain = 1;  // 域名
+    optional RcsType rcs_type = 2;  // rcs代理类型
+    optional bytes info_hash = 3;  // 资源的info-hash值
+    repeated EndPointStruct proxy = 4;  // 代理服务器列表
+}
+
+// RCS向UGS发送的Bt协议keep-alive消息，此消息没有回复消息
+message PpsKeepAliveMsg
+{
+    optional string domain = 1;  // 域名
+}
+
+// RCS向UGS上报已拥有资源消息，此消息没有回复消息
+message PpsReportResourceMsg
+{
+    optional string domain = 1;  // 域名
+    repeated bytes info_hash = 2;  // 已拥有资源对应的info-hash列表
+}
+
+// RCS向UGS发送自己可以提供下载服务的地址列表
+message PpsReportServiceAddressMsg
+{
+    optional string domain = 1;  // 域名
+    repeated EndPointStruct rcs = 2;  // 可提供服务的RCS列表
+}
+
+// RCS向UGS请求tracker-list消息，对应的回复消息为PpsReplyTrackerMsg
+message PpsRequestTrackerMsg
+{
+    optional string domain = 1;  // 域名
+    optional TrackerType tracker_type = 2;  // 请求的tracker类型 
+    optional bytes info_hash = 3;  // 原始格式的info-hash数据（非16进制格式）
+}
+
+// UGS向RCS回复的tracker-list消息，对应的请求消息为PpsRequestTrackerMsg
+message PpsReplyTrackerMsg
+{
+    optional string domain = 1;  // 域名
+    optional TrackerType tracker_type = 2;  // 请求的tracker类型
+    optional bytes info_hash = 3;  // 原始格式的info-hash数据（非16进制格式）
+    repeated EndPointStruct tracker = 4;  // tracker-list数据
+}
+
+
